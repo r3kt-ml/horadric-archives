@@ -69,7 +69,6 @@ I gathered this information from the open-source security community. It is impor
 | Dataset Name | Description | Size (MB) | Date Pulled |
 | :--- | :--- | :--- | :--- |
 | Vulnerability Intelligence | Raw archives of NVD, CISA KEV, and threat feeds. | 1848.2 | 2026-05-13 19:38:35 |
-| R3KT Refined Models | Embeddings and indices for the Knowledge Graph. | 29.85 | 2026-05-13 19:09:37 |
 | DGA_domains_dataset | External cybersecurity dataset archive. | 7.17 | 2026-05-13 18:00:33 |
 | attack-data-model | External cybersecurity dataset archive. | 0.6 | 2026-05-13 17:59:22 |
 | attack-stix-data | External cybersecurity dataset archive. | 223.58 | 2026-05-13 17:58:52 |
