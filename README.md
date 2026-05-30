@@ -1,94 +1,129 @@
 # horadric-archives
 
-Stay awhile and listen. This repository is a collection of cyber threat intelligence that I put together for my own research and technical work. Security data is often spread across too many different platforms, so I wanted to consolidate open-source indicators, threat actor behaviors, and exploit data into a single, reliable location.
+*Stay awhile and listen.* This repository is a consolidated collection of **open-source cyber threat intelligence** — vulnerability data, threat-actor and ransomware tracking, malware indicators, and detection rules — pulled together from across the security community into a single, reliable, regularly-refreshed download.
 
-## Contents
+Security data is scattered across dozens of platforms, each with its own format and cadence. This archive aggregates the **publicly-available** sources into one place so researchers, blue-teamers, and homelab tinkerers can grab a clean snapshot without chasing 38 different feeds.
 
-The archive is structured for use in security monitoring and lab environments. The latest export includes several primary directories containing both raw feeds and processed intelligence:
+> Each release is produced automatically by a snapshot tool that takes the **latest copy of every source feed** and packages it with a machine-readable manifest. Nothing here is hand-edited after generation, so the data stays verifiable against the upstream sources.
 
-* **Vulnerability_Intelligence**: This contains approximately 1.9 GB of raw archives. It includes data from primary sources like NIST, CISA, and various community-driven feeds such as abuse.ch, bitdefender, and emergingthreats.
-* **R3KT_Refined_Models**: This folder includes embeddings, BM25 indices, and calibration datasets. I processed these for deterministic analysis without using large language models. It also features a curated list of exploit nicknames to help resolve common names like Log4Shell or PrintNightmare.
-* **External_Datasets**: This section contains third-party research archives including MITRE ATT&CK STIX data, DGA datasets, and specialized threat intelligence from sources like ShinyHunters and MSSOC.
-* **metadata.json**: This is a detailed manifest that lists file counts, source descriptions, and timestamps to ensure the integrity of the bulk download.
+---
 
-## Data Intelligence and Attribution
+## What's in the download
 
-I gathered this information from the open-source security community. It is important to cite where this data actually originates so the archives remain transparent and verifiable. This list represents the active feeds currently ingested into the registry.
+The latest snapshot (`cti_sources_2026-05-29.zip`) is **~535 MB compressed** (~810 MB extracted), containing **681 files across 38 sources**, organized into two top-level directories plus a manifest:
 
-### Vulnerabilities and Exploit Research
-| Source | Nature of Data | Reference |
-| :--- | :--- | :--- |
-| CISA | Known Exploited Vulnerabilities (KEV) | [cisa.gov](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) |
-| NIST | NVD API 2.0 vulnerability data | [nvd.nist.gov](https://nvd.nist.gov/) |
-| CVE Project | Daily CVE deltas and official JSON V5 formats | [github.com/CVEProject](https://github.com/CVEProject) |
-| FIRST.org | Exploit Prediction Scoring System (EPSS) | [api.first.org](https://api.first.org) |
-| Exploit-DB | Public exploit archives and CVE mappings | [gitlab.com/exploit-database](https://gitlab.com/exploit-database) |
-| OSV.dev | Open source vulnerability database | [osv.dev](https://osv.dev) |
-| GitHub | GitHub Advisory Database | [github.com/advisories](https://github.com/advisories) |
+| Path | Contents | Size (extracted) |
+| :--- | :--- | ---: |
+| **`Vulnerability_Intelligence/`** | Vulnerabilities, IP/URL/domain blocklists, malware IOCs, ransomware tracking, and detection rules (31 sources) | ~241 MB |
+| **`External_Datasets/`** | Frameworks & structured datasets — MITRE ATT&CK/CAPEC (STIX), OSV, MISP Galaxy, GitHub Advisory DB (7 sources) | ~569 MB |
+| **`metadata.json`** | Machine-readable manifest: per-source bucket, origin URL, license, snapshot date, file count, and byte size | — |
+| **`ATTRIBUTION.md`** | Human-readable source + license credits | — |
+| **`manifest.txt`** | Flat file listing with sizes for quick inspection | — |
 
-### Network and Infrastructure Intelligence
-| Source | Nature of Data | Reference |
-| :--- | :--- | :--- |
-| Spamhaus | DROP and EDROP malicious netblocks | [spamhaus.org](https://www.spamhaus.org) |
-| SANS ISC | DShield top attacking IPs | [feeds.dshield.org](https://feeds.dshield.org) |
-| Blocklist.de | Aggregated attack IP categories | [blocklist.de](https://www.blocklist.de) |
-| Emerging Threats | Compromised IP blocklists | [emergingthreats.net](https://rules.emergingthreats.net) |
-| Abuse.ch | Feodo Tracker (C2 IPs) and URLhaus (malware URLs) | [abuse.ch](https://abuse.ch) |
-| Tor Project | Current Tor exit nodes | [torproject.org](https://check.torproject.org/exit-addresses) |
-| Hagezi | DNS Threat Intelligence Feeds | [github.com/hagezi](https://github.com/hagezi) |
+Inside each bucket the layout is `<source>/<feed>/<files>`, holding the **most recent fetched copy** of each feed (historical snapshots are not bundled — every release is a current-state snapshot).
 
-### Malware Research and Vendor Intel
-| Source | Nature of Data | Reference |
-| :--- | :--- | :--- |
-| MalwareBazaar | Malware sample hashes and metadata | [bazaar.abuse.ch](https://bazaar.abuse.ch) |
-| SSL Blacklist | Malicious SSL and JA3 fingerprints | [sslbl.abuse.ch](https://sslbl.abuse.ch) |
-| ESET / Sophos | Vendor malware IOCs from investigations | [github.com/eset](https://github.com/eset) / [sophoslabs](https://github.com/sophoslabs) |
-| Microsoft | MSRC Security Update Guide | [api.msrc.microsoft.com](https://api.msrc.microsoft.com) |
-| Bitdefender / Malwarebytes | Threat research narrative and blog feeds | [bitdefender.com](https://bitdefender.com) / [malwarebytes.com](https://blog.malwarebytes.com) |
-| IBM X-Force | Commercial-grade vendor intelligence | [api.xforce.ibmcloud.com](https://api.xforce.ibmcloud.com) |
+> **A note on what is *not* here.** This is an **open-source-only** archive. Commercial / API-key-gated feeds (e.g. IBM X-Force, VirusTotal, Recorded Future) are **deliberately excluded** — they aren't ours to redistribute. The maintainer's own proprietary processed layer (embeddings, BM25 indices, calibration data, exploit-nickname maps) is **not part of this public source bundle** and is kept separate.
 
-### Ransomware and Actor Tracking
-| Source | Nature of Data | Reference |
-| :--- | :--- | :--- |
-| Ransomwatch | Live ransomware group tracking and posts | [github.com/joshhighet](https://github.com/joshhighet/ransomwatch) |
-| Ransomware.live | Ransomware group API tracking | [api.ransomware.live](https://api.ransomware.live) |
-| RansomLook | Ransomware gang profiles and victim posts | [ransomlook.io](https://ransomlook.io) |
-| Orange Cyberdefense | Ransomware relationships and timelines | [github.com/cert-orangecyberdefense](https://github.com/cert-orangecyberdefense) |
-| DeepDarkCTI | Dark web actor and exploit databases | [github.com/fastfire](https://github.com/fastfire/deepdarkCTI) |
+---
 
-### Detection Rules and Frameworks
-| Source | Nature of Data | Reference |
-| :--- | :--- | :--- |
-| MITRE | ATT&CK Enterprise/ICS and CAPEC | [github.com/mitre/cti](https://github.com/mitre/cti) |
-| YARA Rules | Community malware detection rules | [github.com/Yara-Rules](https://github.com/Yara-Rules) |
-| ClamAV | Virus signature databases | [database.clamav.net](https://database.clamav.net) |
-| Snort / Suricata | Community rulesets and ETOpen rules | [snort.org](https://www.snort.org) / [emergingthreats.net](https://emergingthreats.net) |
+## Sources & attribution
 
-### Update Manifest (Generated: 2026-05-13)
+This data is gathered from the open security community, and it matters that credit is given where it's due. Every source below is included under its own terms — `metadata.json` and `ATTRIBUTION.md` in each release carry the per-source license. **The underlying data belongs to its original publishers**; this project only curates and packages it.
 
-| Dataset Name | Description | Size (MB) | Date Pulled |
+### Vulnerabilities & exploit research
+| Source | Data | License | Reference |
 | :--- | :--- | :--- | :--- |
-| Vulnerability Intelligence | Raw archives of NVD, CISA KEV, and threat feeds. | 1848.2 | 2026-05-13 19:38:35 |
-| DGA_domains_dataset | External cybersecurity dataset archive. | 7.17 | 2026-05-13 18:00:33 |
-| attack-data-model | External cybersecurity dataset archive. | 0.6 | 2026-05-13 17:59:22 |
-| attack-stix-data | External cybersecurity dataset archive. | 223.58 | 2026-05-13 17:58:52 |
-| cti-master | External cybersecurity dataset archive. | 48.49 | 2026-05-13 17:58:24 |
-| Security-Datasets | External cybersecurity dataset archive. | 532.96 | 2026-05-11 12:15:44 |
-| mssocarchive | External cybersecurity dataset archive. | 513.3 | 2026-05-11 12:14:53 |
-| shinyhuntersarchive | External cybersecurity dataset archive. | 397.09 | 2026-05-11 10:40:35 |
-| nvdcve-2.0-2026 | External cybersecurity dataset archive. | 8.01 | 2026-05-13 18:02:12 |
-| whoisdb-master | External cybersecurity dataset archive. | 0.01 | 2026-05-09 22:28:14 |
+| CISA | Known Exploited Vulnerabilities (KEV) | US Gov public domain | [cisa.gov](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) |
+| NIST NVD | NVD API 2.0 vulnerability data | US Gov public domain | [nvd.nist.gov](https://nvd.nist.gov/) |
+| CVE Project | Official CVE records (JSON v5) | CVE Program Terms | [github.com/CVEProject](https://github.com/CVEProject) |
+| FIRST.org | EPSS exploit-prediction scores | Free w/ attribution | [first.org/epss](https://www.first.org/epss) |
+| Exploit-DB | Public exploit archive + CVE maps | GPLv2 | [gitlab.com/exploit-database](https://gitlab.com/exploit-database/exploitdb) |
+| OSV.dev | Open-source vulnerability database | CC-BY-4.0 | [osv.dev](https://osv.dev) |
+| GitHub | GitHub Advisory Database | CC-BY-4.0 | [github.com/advisories](https://github.com/advisories) |
 
-All data is for educational and defensive use. Please follow the terms of service for each source when you use this data.
+### Network & infrastructure intelligence
+| Source | Data | License | Reference |
+| :--- | :--- | :--- | :--- |
+| Spamhaus | DROP / EDROP malicious netblocks | Spamhaus terms | [spamhaus.org](https://www.spamhaus.org/drop/) |
+| SANS ISC | DShield top attacking IPs | Free use | [dshield.org](https://www.dshield.org) |
+| Blocklist.de | Aggregated attack-IP categories | Free use | [blocklist.de](https://www.blocklist.de) |
+| Emerging Threats | Compromised-IP blocklists | BSD (ETOpen) | [emergingthreats.net](https://rules.emergingthreats.net) |
+| Abuse.ch | Feodo Tracker (C2 IPs), URLhaus, SSL/JA3 blacklists | CC0 | [abuse.ch](https://abuse.ch) |
+| Tor Project | Current Tor exit nodes | Public | [torproject.org](https://check.torproject.org) |
+| Hagezi | DNS threat-intelligence feeds | GPL-3.0 | [github.com/hagezi](https://github.com/hagezi/dns-blocklists) |
+
+### Malware research & vendor IOCs
+| Source | Data | License | Reference |
+| :--- | :--- | :--- | :--- |
+| ESET | Malware IOCs from APT investigations | BSD (see repo) | [github.com/eset](https://github.com/eset/malware-ioc) |
+| SophosLabs | Enterprise malware IOCs | See repo | [github.com/sophoslabs](https://github.com/sophoslabs/IoCs) |
+| Dr.Web | Android / mobile malware IOCs | See repo | [github.com/DoctorWebLtd](https://github.com/DoctorWebLtd/malware-iocs) |
+| PRODAFT | Mobile / banking-trojan IOCs | See repo | [github.com/prodaft](https://github.com/prodaft/malware-ioc) |
+| executemalware | Continuously-updated malware IOCs | See repo | [github.com/executemalware](https://github.com/executemalware/Malware-IOCs) |
+| Bitdefender Labs *(vendor content)* | Threat-research feed | Vendor terms | [bitdefender.com](https://www.bitdefender.com/blog/labs/) |
+| Malwarebytes Labs *(vendor content)* | Threat-research feed | Vendor terms | [malwarebytes.com](https://www.malwarebytes.com/blog) |
+| Microsoft MSRC *(vendor content)* | Security Update Guide | Vendor terms | [msrc.microsoft.com](https://msrc.microsoft.com/update-guide) |
+
+### Ransomware & actor tracking
+| Source | Data | License | Reference |
+| :--- | :--- | :--- | :--- |
+| Ransomwatch | Live ransomware group tracking + posts | MIT | [github.com/joshhighet](https://github.com/joshhighet/ransomwatch) |
+| Ransomware.live | Ransomware group API tracking | Free API | [ransomware.live](https://www.ransomware.live) |
+| RansomLook | Gang profiles + victim posts | Free | [ransomlook.io](https://www.ransomlook.io) |
+| Orange Cyberdefense | Ransomware relationships & timelines | See repo | [github.com/cert-orangecyberdefense](https://github.com/cert-orangecyberdefense/ransomware_map) |
+| DeepDarkCTI | Dark-web actors & exploit databases | See repo | [github.com/fastfire](https://github.com/fastfire/deepdarkCTI) |
+| NCSC UK | National advisories | OGL v3.0 | [ncsc.gov.uk](https://www.ncsc.gov.uk) |
+
+### Detection rules & frameworks
+| Source | Data | License | Reference |
+| :--- | :--- | :--- | :--- |
+| MITRE | ATT&CK Enterprise/ICS + CAPEC (STIX) | Apache-2.0 / MITRE terms | [github.com/mitre/cti](https://github.com/mitre/cti) |
+| MISP Galaxy | Threat-actor / malware clusters | CC-BY (see repo) | [github.com/MISP](https://github.com/MISP/misp-galaxy) |
+| YARA Rules | Community malware-detection rules | See repo | [github.com/Yara-Rules](https://github.com/Yara-Rules/rules) |
+| ReversingLabs | Vendor YARA rules | MIT | [github.com/reversinglabs](https://github.com/reversinglabs/reversinglabs-yara-rules) |
+| ClamAV | Virus signature databases | GPLv2 | [clamav.net](https://www.clamav.net) |
+| Snort | Community ruleset | GPLv2 | [snort.org](https://www.snort.org) |
+| Suricata | Emerging Threats Open ruleset | BSD/MIT | [emergingthreats.net](https://rules.emergingthreats.net) |
+| Bert-Jan / PyMISP | OSINT feed aggregation + CISA alerts | See repo | [github.com/Bert-JanP](https://github.com/Bert-JanP/Open-Source-Threat-Intel-Feeds) |
+
+*Vendor-content feeds (Bitdefender / Malwarebytes / Microsoft) are syndicated research feeds; their article text remains the property of the respective vendor and is included only under each vendor's own terms.*
+
+---
+
+## Snapshot manifest — 2026-05-29
+
+| Bucket | Top sources (by size) | Sources | Size (extracted) |
+| :--- | :--- | ---: | ---: |
+| Vulnerability_Intelligence | ClamAV (113 MB), Hagezi (72 MB), abuse.ch (13 MB), Exploit-DB (10 MB) | 31 | ~241 MB |
+| External_Datasets | OSV (502 MB), MITRE ATT&CK (51 MB), MISP Galaxy (7 MB), CAPEC (4 MB) | 7 | ~569 MB |
+| **Total** | | **38** | **~810 MB** (~535 MB zipped) |
+
+The authoritative, per-file manifest ships inside every release as `metadata.json`.
+
+---
 
 ## Usage
 
-The data is provided in JSON and CSV formats to keep it consistent and easy to parse. You can download the full dataset from the releases page. These files are ready to be pulled into a SIEM like Wazuh or used for testing detection rules in a lab environment.
+Data is provided in the sources' native formats (JSON, CSV, STIX, plain-text rule files), kept verbatim from upstream so it parses the same way the original feeds do.
 
-## Future Plans
+1. Download the latest `cti_sources_*.zip` from the **Releases** page (or the mirror link).
+2. Extract it; point your tooling at the `Vulnerability_Intelligence/` and `External_Datasets/` folders.
+3. Cross-reference `metadata.json` for source URLs, licenses, and snapshot dates.
 
-I am working on an automated pipeline to handle live data ingestion. My next goal is to use the deterministic expert networks I have been building to help organize this data without the noise of traditional AI. I also plan to add documentation for using this data with hardware firewalls like the Raspberry Pi 5.
+It's ready to feed into a SIEM (Wazuh, etc.), load into a lab, or test detection rules against. A fresh snapshot is published on a **weekly** cadence.
+
+---
+
+## Future plans
+
+- An automated ingestion pipeline (in progress) keeps the snapshots current without manual steps.
+- A deterministic, non-LLM expert-network layer to organize and cross-link this data without the noise of generative models.
+- Documentation for using these feeds with hardware firewalls (e.g. Raspberry Pi 5 / OPNsense).
+
+---
 
 ## License
 
-This collection is shared under the MIT license. This covers the curation and structure of the repository. The underlying data belongs to the original sources listed in the attribution table. I believe that having access to accurate information is the best way to build a strong defense. Use this information responsibly.
+The **curation and structure** of this repository are released under the **MIT License**. The **underlying data belongs to the original sources** listed above and is redistributed under each source's own terms — please honor those terms when you use it. All data is provided for **educational and defensive** purposes.
+
+Accurate information is the foundation of a strong defense. Use it responsibly.
